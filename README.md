@@ -6,7 +6,10 @@ The first script is a simple implementation of a Long Short-Term Memory (LSTM) m
 To use this script, you need to have Tensorflow, Keras, and yfinance installed. You can install them using pip or conda. You also need to change the ticker_name variable to the name of the stock you want to predict. By default, the script predicts the future stock prices and volumes for Amazon (AMZN).
 
 The model used in this script is a simple LSTM model that consists of three LSTM layers, each followed by a dropout layer, and a dense layer. 
-
+   
+   
+   
+   
 
 The second script uses historical stock price data, along with various technical analysis indicators, to train a machine learning model that can predict future prices. The script first downloads historical stock price data from Yahoo Finance using the yfinance library. It then adds technical analysis indicators to the data, forward-fills any missing or 0 values, and normalizes the features. The technical indicators used are:
 
