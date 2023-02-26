@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
 from tensorflow.keras.callbacks import EarlyStopping
 import ta
 
@@ -92,19 +93,41 @@ def build_model(train_data, test_data):
     Builds and trains a Random Forest model using the given training data.
     Returns the trained model and the test set.
     """
+    best_model, best_params = optimize_hyperparameters(train_data, test_data)
+    
     train_inputs, train_outputs = train_data
     test_inputs, test_outputs = test_data
 
-    model = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=10,
-        min_samples_split=5,
-        min_samples_leaf=5,
-        random_state=42,
-    )
+    model = RandomForestRegressor(**best_params)
     model.fit(train_inputs, train_outputs)
 
     return model, (test_inputs, test_outputs)
+
+
+
+def optimize_hyperparameters(train_data, test_data):
+    """
+    Optimizes the hyperparameters of a Random Forest model using Grid Search.
+    Returns the best model and its parameters.
+    """
+    train_inputs, train_outputs = train_data
+    test_inputs, test_outputs = test_data
+    
+    param_grid = {
+        'n_estimators': [100, 200, 300],
+        'max_depth': [3, 5, 10],
+        'max_features': ['sqrt', 'log2']
+    }
+    
+    model = RandomForestRegressor()
+    grid_search = GridSearchCV(model, param_grid, cv=5)
+    grid_search.fit(train_inputs, train_outputs)
+    
+    best_model = grid_search.best_estimator_
+    best_params = grid_search.best_params_
+    
+    return best_model, best_params
+
 
 
 def predict_future_prices(model, test_data, inv_scaler, days=30):
